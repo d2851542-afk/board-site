@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Доска объявлений</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+    header {
+      background: #176b50;
+      color: white;
+      padding: 22px 16px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; }
+    main {
+      max-width: 800px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px #0000000d;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #176b50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .ad {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 12px;
+      background: white;
+    }
+    .category { color: #176b50; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Доска объявлений</h1>
+    <p>Покупай, продавай, обменивайся</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Найти объявление</h2>
+      <input id="search" placeholder="Что ищем?">
+      <button onclick="showAds()">Поиск</button>
+    </section>
+
+    <section class="panel">
+      <h2>Добавить объявление</h2>
+      <form id="adForm">
+        <input id="title" placeholder="Название объявления" required>
+        <input id="want" placeholder="Цена или что хотите взамен" required>
+        <select id="category">
+          <option>Разное</option>
+          <option>Электроника</option>
+          <option>Одежда</option>
+          <option>Дом и сад</option>
+          <option>Услуги</option>
+        </select>
+        <textarea id="description" placeholder="Описание"></textarea>
+        <button type="submit">Опубликовать</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Объявления</h2>
+      <div id="ads">
+        <p>Пока объявлений нет. Добавьте первое!</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let ads = [];
+
+    function showAds() {
+      const query = document.getElementById('search').value.toLowerCase();
+      const filtered = ads.filter(ad =>
+        (ad.title + ' ' + ad.description + ' ' + ad.category)
+          .toLowerCase().includes(query)
+      );
+      const container = document.getElementById('ads');
+      container.innerHTML = '';
+
+      if (!filtered.length) {
+        container.textContent = 'Объявления не найдены.';
+        return;
+      }
+
+      filtered.forEach(ad => {
+        const item = document.createElement('div');
+        item.className = 'ad';
+        const title = document.createElement('h3');
+        title.textContent = ad.title;
+        const category = document.createElement('p');
+        category.className = 'category';
+        category.textContent = ad.category;
+        const price = document.createElement('strong');
+        price.textContent = ad.want;
+        const description = document.createElement('p');
+        description.textContent = ad.description;
+        item.append(title, category, price, description);
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById('adForm').addEventListener('submit', event => {
+      event.preventDefault();
+      ads.unshift({
+        title: document.getElementById('title').value,
+        want: document.getElementById('want').value,
+        category: document.getElementById('category').value,
+        description: document.getElementById('description').value
+      });
+      event.target.reset();
+      showAds();
+      alert('Объявление добавлено на страницу!');
+    });
+  </script>
+</body>
+          </html>
+  
